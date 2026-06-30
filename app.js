@@ -29,7 +29,8 @@ function showAuthUI() {
 function showAppUI(user) {
   document.getElementById('auth-section').hidden = true;
   document.getElementById('app-section').hidden = false;
-  document.getElementById('user-email').textContent = user.email;
+  document.getElementById('user-email').textContent =
+    user.email ?? user.user_metadata?.full_name ?? user.user_metadata?.user_name ?? '사용자';
 }
 
 async function signUp() {
@@ -67,6 +68,22 @@ async function signIn() {
 
 async function signOut() {
   await db.auth.signOut();
+}
+
+async function signInWithGitHub() {
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'github',
+    options: { redirectTo: 'https://jisun-park-0022.github.io/todo-app' }
+  });
+  if (error) console.error('GitHub 로그인 오류:', error.message);
+}
+
+async function signInWithGoogle() {
+  const { error } = await db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://jisun-park-0022.github.io/todo-app' }
+  });
+  if (error) console.error('Google 로그인 오류:', error.message);
 }
 
 function switchTab(tab) {
@@ -204,5 +221,7 @@ document.getElementById('signupBtn').addEventListener('click', signUp);
 document.getElementById('signoutBtn').addEventListener('click', signOut);
 document.getElementById('tab-signin').addEventListener('click', () => switchTab('signin'));
 document.getElementById('tab-signup').addEventListener('click', () => switchTab('signup'));
+document.getElementById('githubBtn').addEventListener('click', signInWithGitHub);
+document.getElementById('googleBtn').addEventListener('click', signInWithGoogle);
 
 initAuth();

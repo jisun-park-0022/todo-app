@@ -339,6 +339,52 @@ h1 {
   line-height: 1.6;
 }
 
+/* ── Social login ── */
+.social-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0 12px;
+  color: #9ca3af;
+  font-size: 0.82rem;
+}
+
+.social-divider::before,
+.social-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 11px 14px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+
+.social-btn:hover { opacity: 0.85; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+
+.social-btn--github {
+  background: #24292e;
+  color: #fff;
+  border: none;
+}
+
+.social-btn--google {
+  background: #fff;
+  color: #444;
+  border: 1.5px solid #dde1ea;
+}
+
 /* ── User bar (로그인 후 헤더) ── */
 .user-bar {
   display: flex;
