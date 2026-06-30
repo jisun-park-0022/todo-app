@@ -419,3 +419,184 @@ h1 {
   border-color: #ef4444;
   color: #ef4444;
 }
+
+/* ── Share button ── */
+.share-btn {
+  padding: 7px 14px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.share-btn:hover { background: #574fd6; }
+
+/* ── Share badge ── */
+.share-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.share-badge--readonly {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.share-badge--edit {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+/* ── Share modal ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-card h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d2d44;
+  margin: 0;
+}
+
+.share-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* iOS-style toggle */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider { background: #6c63ff; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.share-perm-row {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.share-perm-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.share-link-row {
+  display: flex;
+  gap: 8px;
+}
+
+.share-link-row input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 2px solid #dde1ea;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: #6b7280;
+  outline: none;
+  background: #f9fafb;
+}
+
+#copyLinkBtn {
+  padding: 9px 14px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+#copyLinkBtn:hover { background: #574fd6; }
+
+.modal-close {
+  align-self: flex-end;
+  padding: 8px 18px;
+  background: none;
+  border: 2px solid #dde1ea;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.modal-close:hover { border-color: #6c63ff; color: #6c63ff; }
+
+/* ── Invalid share ── */
+.invalid-share {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #6b7280;
+}

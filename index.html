@@ -54,11 +54,13 @@
         <h1>ToDo List</h1>
         <div class="user-bar">
           <span id="user-email" class="user-email"></span>
+          <button id="shareBtn" class="share-btn">공유</button>
           <button id="signoutBtn" class="signout-btn">로그아웃</button>
         </div>
         <div class="input-row">
           <input type="text" id="todoInput" placeholder="할 일을 입력하세요" maxlength="100" />
           <button id="addBtn">+ 추가</button>
+          <span id="share-badge" hidden class="share-badge"></span>
         </div>
       </header>
 
@@ -107,6 +109,31 @@
         </div>
 
       </div>
+    </div>
+  </div>
+
+  <!-- 공유 modal -->
+  <div id="share-modal" class="modal-overlay" hidden>
+    <div class="modal-card">
+      <h2>보드 공유</h2>
+      <div class="share-toggle-row">
+        <span>공유 활성화</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="shareToggle" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div id="share-options" hidden>
+        <div class="share-perm-row">
+          <label><input type="radio" name="perm" value="readonly" checked /> 읽기 전용</label>
+          <label><input type="radio" name="perm" value="edit" /> 편집 가능</label>
+        </div>
+        <div class="share-link-row">
+          <input type="text" id="shareLinkInput" readonly />
+          <button id="copyLinkBtn">복사</button>
+        </div>
+      </div>
+      <button id="closeShareModal" class="modal-close">닫기</button>
     </div>
   </div>
 
