@@ -53,9 +53,15 @@ async function signIn() {
   const errEl = document.getElementById('signin-error');
   errEl.textContent = '';
 
-  const { error } = await db.auth.signInWithPassword({ email, password });
+  const { data, error } = await db.auth.signInWithPassword({ email, password });
   if (error) {
     errEl.textContent = error.message;
+    return;
+  }
+  if (data.session) {
+    currentUser = data.session.user;
+    showAppUI(currentUser);
+    render();
   }
 }
 
