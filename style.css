@@ -4,6 +4,8 @@
   padding: 0;
 }
 
+[hidden] { display: none !important; }
+
 body {
   min-height: 100vh;
   background: #f1f3f6;
