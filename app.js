@@ -10,6 +10,7 @@ let currentUser = null;
 let draggedId = null;
 let shareToken = new URLSearchParams(location.search).get('share');
 let currentShareData = null;
+let realtimeChannel = null;
 
 // ── Auth ─────────────────────────────────────────────────
 function initAuth() {
@@ -108,6 +109,21 @@ async function loadSharedBoard(token) {
   const perm = data[0].permission;
   showSharedBoardUI(perm);
   renderShared(data, perm);
+  initSharedRealtime(token);
+}
+
+function initSharedRealtime(token) {
+  realtimeChannel = db.channel(`share-${token}`)
+    .on('broadcast', { event: 'board-update' }, async () => {
+      const { data } = await db.rpc('get_shared_board', { p_token: token });
+      if (data && data.length > 0) renderShared(data, data[0].permission);
+    })
+    .subscribe();
+}
+
+async function broadcastBoardUpdate() {
+  if (!realtimeChannel) return;
+  await realtimeChannel.send({ type: 'broadcast', event: 'board-update', payload: {} });
 }
 
 function showSharedBoardUI(perm) {
@@ -267,6 +283,7 @@ async function addTodo() {
     if (error) { console.error('shared insert error:', error); return; }
     const { data } = await db.rpc('get_shared_board', { p_token: shareToken });
     renderShared(data, 'edit');
+    await broadcastBoardUpdate();
   } else {
     if (!currentUser) return;
     const { error } = await db
@@ -298,6 +315,7 @@ async function moveCard(id, newStatus) {
     if (error) { console.error('shared move error:', error); return; }
     const { data } = await db.rpc('get_shared_board', { p_token: shareToken });
     renderShared(data, 'edit');
+    await broadcastBoardUpdate();
   } else {
     const { error } = await db
       .from('todos')
