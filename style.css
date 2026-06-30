@@ -235,3 +235,139 @@ h1 {
   color: #ef4444;
   background: #fdecea;
 }
+
+/* ── Auth ── */
+#auth-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f3f6;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-card h1 {
+  text-align: center;
+  margin-bottom: 28px;
+  font-size: 1.6rem;
+  color: #2d2d44;
+}
+
+.auth-tabs {
+  display: flex;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6b7280;
+  transition: background 0.2s, color 0.2s;
+}
+
+.auth-tab.active {
+  background: #6c63ff;
+  color: #fff;
+}
+
+.auth-input {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  border: 2px solid #dde1ea;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  border-color: #6c63ff;
+}
+
+.auth-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auth-btn:hover { background: #574fd6; }
+
+.auth-error {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #ef4444;
+  min-height: 1.2em;
+}
+
+.auth-notice {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #166534;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ── User bar (로그인 후 헤더) ── */
+.user-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.signout-btn {
+  padding: 7px 14px;
+  background: none;
+  border: 2px solid #dde1ea;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.signout-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}

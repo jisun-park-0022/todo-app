@@ -1,30 +1,90 @@
-const STORAGE_KEY = 'kanban_todos';
+// ── Supabase 설정 ─────────────────────────────────────────
+const SUPABASE_URL = 'https://doiflppyuggeiaczflwf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRvaWZscHB5dWdnZWlhY3pmbHdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3NjE1OTgsImV4cCI6MjA5ODMzNzU5OH0.QsqxI-S_QpoPAANeTKx7VMc4naXRoWOlIi9PTPWmeLA';
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const STATUSES = ['todo', 'inprogress', 'done'];
 
+let currentUser = null;
 let draggedId = null;
 
-// ── Storage ──────────────────────────────────────────────
-function load() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch { return []; }
+// ── Auth ─────────────────────────────────────────────────
+function initAuth() {
+  db.auth.onAuthStateChange((_event, session) => {
+    currentUser = session?.user ?? null;
+    if (currentUser) {
+      showAppUI(currentUser);
+      render();
+    } else {
+      showAuthUI();
+    }
+  });
 }
 
-function save(todos) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+function showAuthUI() {
+  document.getElementById('auth-section').hidden = false;
+  document.getElementById('app-section').hidden = true;
 }
 
-function genId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+function showAppUI(user) {
+  document.getElementById('auth-section').hidden = true;
+  document.getElementById('app-section').hidden = false;
+  document.getElementById('user-email').textContent = user.email;
+}
+
+async function signUp() {
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const errEl = document.getElementById('signup-error');
+  errEl.textContent = '';
+
+  const { error } = await db.auth.signUp({ email, password });
+  if (error) {
+    errEl.textContent = error.message;
+    return;
+  }
+  document.getElementById('form-signup').hidden = true;
+  document.getElementById('email-sent').hidden = false;
+}
+
+async function signIn() {
+  const email = document.getElementById('signin-email').value.trim();
+  const password = document.getElementById('signin-password').value;
+  const errEl = document.getElementById('signin-error');
+  errEl.textContent = '';
+
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  if (error) {
+    errEl.textContent = error.message;
+  }
+}
+
+async function signOut() {
+  await db.auth.signOut();
+}
+
+function switchTab(tab) {
+  const isSignin = tab === 'signin';
+  document.getElementById('form-signin').hidden = !isSignin;
+  document.getElementById('form-signup').hidden = isSignin;
+  document.getElementById('email-sent').hidden = true;
+  document.getElementById('tab-signin').classList.toggle('active', isSignin);
+  document.getElementById('tab-signup').classList.toggle('active', !isSignin);
 }
 
 // ── Render ───────────────────────────────────────────────
-function render() {
-  const todos = load();
+async function render() {
+  const { data: todos, error } = await db
+    .from('todos')
+    .select('*')
+    .order('position');
+
+  if (error) { console.error('render error:', error); return; }
 
   STATUSES.forEach(status => {
-    const listEl  = document.getElementById('list-' + status);
+    const listEl = document.getElementById('list-' + status);
     const countEl = document.getElementById('count-' + status);
-    const items   = todos.filter(t => t.status === status);
+    const items = todos.filter(t => t.status === status);
 
     listEl.innerHTML = '';
     countEl.textContent = items.length;
@@ -53,40 +113,47 @@ function createCard(todo) {
   });
 
   card.addEventListener('dragstart', onDragStart);
-  card.addEventListener('dragend',   onDragEnd);
+  card.addEventListener('dragend', onDragEnd);
 
   card.append(text, delBtn);
   return card;
 }
 
 // ── CRUD ─────────────────────────────────────────────────
-function addTodo() {
+async function addTodo() {
   const input = document.getElementById('todoInput');
-  const text  = input.value.trim();
-  if (!text) return;
+  const text = input.value.trim();
+  if (!text || !currentUser) return;
 
-  const todos = load();
-  todos.push({ id: genId(), text, status: 'todo' });
-  save(todos);
-  render();
+  const { error } = await db
+    .from('todos')
+    .insert({ text, status: 'todo', position: Date.now(), user_id: currentUser.id });
 
+  if (error) { console.error('insert error:', error); return; }
+
+  await render();
   input.value = '';
   input.focus();
 }
 
-function deleteTodo(id) {
-  const todos = load().filter(t => t.id !== id);
-  save(todos);
-  render();
+async function deleteTodo(id) {
+  const { error } = await db
+    .from('todos')
+    .delete()
+    .eq('id', id);
+
+  if (error) { console.error('delete error:', error); return; }
+  await render();
 }
 
-function moveCard(id, newStatus) {
-  const todos = load();
-  const todo  = todos.find(t => t.id === id);
-  if (!todo || todo.status === newStatus) return;
-  todo.status = newStatus;
-  save(todos);
-  render();
+async function moveCard(id, newStatus) {
+  const { error } = await db
+    .from('todos')
+    .update({ status: newStatus })
+    .eq('id', id);
+
+  if (error) { console.error('update error:', error); return; }
+  await render();
 }
 
 // ── Drag & Drop ──────────────────────────────────────────
@@ -108,17 +175,16 @@ function onDragOver(e) {
 }
 
 function onDragLeave(e) {
-  // only remove highlight when leaving the list area itself, not a child
   if (!e.currentTarget.contains(e.relatedTarget)) {
     e.currentTarget.classList.remove('drag-over');
   }
 }
 
-function onDrop(e) {
+async function onDrop(e) {
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
   if (draggedId) {
-    moveCard(draggedId, e.currentTarget.dataset.status);
+    await moveCard(draggedId, e.currentTarget.dataset.status);
   }
 }
 
@@ -127,5 +193,10 @@ document.getElementById('addBtn').addEventListener('click', addTodo);
 document.getElementById('todoInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') addTodo();
 });
+document.getElementById('signinBtn').addEventListener('click', signIn);
+document.getElementById('signupBtn').addEventListener('click', signUp);
+document.getElementById('signoutBtn').addEventListener('click', signOut);
+document.getElementById('tab-signin').addEventListener('click', () => switchTab('signin'));
+document.getElementById('tab-signup').addEventListener('click', () => switchTab('signup'));
 
-render();
+initAuth();
