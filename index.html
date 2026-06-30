@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ToDo List</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1>ToDo List</h1>
+      <div class="input-row">
+        <input type="text" id="todoInput" placeholder="할 일을 입력하세요" maxlength="100" />
+        <button id="addBtn">+ 추가</button>
+      </div>
+    </header>
+
+    <div class="kanban">
+
+      <!-- 예정 -->
+      <div class="column column--todo" data-status="todo">
+        <div class="col-header">
+          <span class="col-title">예정</span>
+          <span class="col-count" id="count-todo">0</span>
+        </div>
+        <div class="card-list" id="list-todo"
+          data-status="todo"
+          ondragover="onDragOver(event)"
+          ondragleave="onDragLeave(event)"
+          ondrop="onDrop(event)">
+        </div>
+      </div>
+
+      <!-- 진행중 -->
+      <div class="column column--inprogress" data-status="inprogress">
+        <div class="col-header">
+          <span class="col-title">진행중</span>
+          <span class="col-count" id="count-inprogress">0</span>
+        </div>
+        <div class="card-list" id="list-inprogress"
+          data-status="inprogress"
+          ondragover="onDragOver(event)"
+          ondragleave="onDragLeave(event)"
+          ondrop="onDrop(event)">
+        </div>
+      </div>
+
+      <!-- 완료 -->
+      <div class="column column--done" data-status="done">
+        <div class="col-header">
+          <span class="col-title">완료</span>
+          <span class="col-count" id="count-done">0</span>
+        </div>
+        <div class="card-list" id="list-done"
+          data-status="done"
+          ondragover="onDragOver(event)"
+          ondragleave="onDragLeave(event)"
+          ondrop="onDrop(event)">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

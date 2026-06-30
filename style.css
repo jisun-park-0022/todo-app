@@ -1,0 +1,237 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: #f1f3f6;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #1a1a2e;
+}
+
+/* ── Page layout ── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+/* ── Header ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #2d2d44;
+  white-space: nowrap;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-width: 260px;
+}
+
+#todoInput {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #dde1ea;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+#todoInput:focus {
+  border-color: #6c63ff;
+}
+
+#addBtn {
+  padding: 10px 18px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#addBtn:hover  { background: #574fd6; }
+#addBtn:active { transform: scale(0.97); }
+
+/* ── Kanban grid ── */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 680px) {
+  .kanban { grid-template-columns: 1fr; }
+}
+
+/* ── Column ── */
+.column {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
+/* Column header */
+.col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.col-count {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0 6px;
+}
+
+/* Column card area */
+.card-list {
+  min-height: 200px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: background 0.15s;
+}
+
+/* ── Column colour themes ── */
+
+/* 예정 – yellow */
+.column--todo {
+  background: #fefce8;
+  border: 2px solid #fde047;
+}
+.column--todo .col-header {
+  background: #fef08a;
+  color: #713f12;
+}
+.column--todo .col-count {
+  background: #fde047;
+  color: #713f12;
+}
+.column--todo .card-list.drag-over {
+  background: #fef9c3;
+  outline: 2px dashed #facc15;
+  outline-offset: -4px;
+}
+
+/* 진행중 – blue */
+.column--inprogress {
+  background: #eff6ff;
+  border: 2px solid #93c5fd;
+}
+.column--inprogress .col-header {
+  background: #bfdbfe;
+  color: #1e3a8a;
+}
+.column--inprogress .col-count {
+  background: #60a5fa;
+  color: #fff;
+}
+.column--inprogress .card-list.drag-over {
+  background: #dbeafe;
+  outline: 2px dashed #3b82f6;
+  outline-offset: -4px;
+}
+
+/* 완료 – gray */
+.column--done {
+  background: #f9fafb;
+  border: 2px solid #d1d5db;
+}
+.column--done .col-header {
+  background: #e5e7eb;
+  color: #374151;
+}
+.column--done .col-count {
+  background: #9ca3af;
+  color: #fff;
+}
+.column--done .card-list.drag-over {
+  background: #f3f4f6;
+  outline: 2px dashed #9ca3af;
+  outline-offset: -4px;
+}
+
+/* ── Cards ── */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: grab;
+  transition: box-shadow 0.15s, opacity 0.15s, transform 0.15s;
+  user-select: none;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.card.dragging {
+  opacity: 0.45;
+  transform: rotate(1.5deg) scale(1.02);
+  cursor: grabbing;
+}
+
+.card-text {
+  flex: 1;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.column--done .card-text {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #c4c9d4;
+  padding: 2px 4px;
+  border-radius: 5px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.delete-btn:hover {
+  color: #ef4444;
+  background: #fdecea;
+}
